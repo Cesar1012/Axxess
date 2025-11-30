@@ -1,0 +1,13 @@
+{
+    "require": {
+        "php": "^8.2",
+        "ext-pdo_mysql": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "ext-tokenizer": "*",
+        "ext-xml": "*",
+        "ext-ctype": "*",
+        "ext-json": "*",
+        "ext-bcmath": "*"
+    }
+}

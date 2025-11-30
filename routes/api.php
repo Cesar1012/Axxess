@@ -28,6 +28,15 @@ use App\Http\Controllers\Api\EntregaPacienteController;
 use App\Http\Controllers\Api\RutaEntregaController;
 use App\Http\Controllers\Api\MovimientoInventarioController;
 use App\Http\Controllers\Api\AuditoriaController;
+
+// Health Check para Railway
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'timestamp' => now()->toISOString(),
+        'service' => 'AXXESS API'
+    ]);
+});
 use App\Http\Controllers\ReporteController; // ⭐ CORREGIDO: Usar el original
 use App\Http\Controllers\Api\ReporteGeneradoController;
 use App\Http\Controllers\Api\DashboardController;
