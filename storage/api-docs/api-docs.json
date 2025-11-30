@@ -1,0 +1,1056 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Sistema AXXESS API",
+        "description": "API REST para el Sistema de Gestión AXXESS - GLAZ GROUP S.A.S.",
+        "contact": {
+            "name": "GLAZ GROUP S.A.S.",
+            "email": "soporte@glazgroup.com"
+        },
+        "license": {
+            "name": "Confidencial",
+            "url": "https://glazgroup.com/licencia"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Servidor de Desarrollo"
+        }
+    ],
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Login de usuario",
+                "description": "Autentica un usuario y genera un token de acceso Sanctum",
+                "operationId": "dd51a484b7fa0f97c7680fdbde14cf5f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@glazgroup.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "Admin2025!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nombre_completo": {
+                                                    "type": "string",
+                                                    "example": "Administrador"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "admin@glazgroup.com"
+                                                },
+                                                "rol": {
+                                                    "type": "string",
+                                                    "example": "administrador"
+                                                },
+                                                "modulo_acceso": {
+                                                    "type": "string",
+                                                    "example": "ambos"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|laravel_sanctum_token_here"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login exitoso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Credenciales incorrectas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Las credenciales son incorrectas"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Registro de nuevo usuario",
+                "description": "Crea un nuevo usuario en el sistema",
+                "operationId": "c7bb21a0d87049e161b8e4c9b0d909f2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre_completo",
+                                    "email",
+                                    "password",
+                                    "rol",
+                                    "modulo_acceso"
+                                ],
+                                "properties": {
+                                    "nombre_completo": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "Password123!"
+                                    },
+                                    "rol": {
+                                        "type": "string",
+                                        "enum": [
+                                            "administrador",
+                                            "control",
+                                            "consulta",
+                                            "ejecutivo_comercial"
+                                        ],
+                                        "example": "consulta"
+                                    },
+                                    "modulo_acceso": {
+                                        "type": "string",
+                                        "enum": [
+                                            "axxess_therapies",
+                                            "axxess_market",
+                                            "ambos"
+                                        ],
+                                        "example": "ambos"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "3001234567"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario registrado exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/auth/me": {
+            "get": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Obtener usuario autenticado",
+                "description": "Retorna los datos del usuario actualmente autenticado",
+                "operationId": "b5de204f5e452ef51327c691aa99e77c",
+                "responses": {
+                    "200": {
+                        "description": "Datos del usuario",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nombre_completo": {
+                                                    "type": "string",
+                                                    "example": "Administrador"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "admin@glazgroup.com"
+                                                },
+                                                "rol": {
+                                                    "type": "string",
+                                                    "example": "administrador"
+                                                },
+                                                "modulo_acceso": {
+                                                    "type": "string",
+                                                    "example": "ambos"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Cerrar sesión",
+                "description": "Revoca el token actual del usuario",
+                "operationId": "df9bdc6c7a6d9f20b983526b2ec0f698",
+                "responses": {
+                    "200": {
+                        "description": "Sesión cerrada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sesión cerrada exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/logout-all": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Cerrar todas las sesiones",
+                "description": "Revoca todos los tokens del usuario",
+                "operationId": "cb4dc83917db0d5fff6f1f5a2562c05b",
+                "responses": {
+                    "200": {
+                        "description": "Todas las sesiones cerradas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Todas las sesiones han sido cerradas"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/general": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Estadísticas generales del sistema",
+                "description": "Retorna métricas globales del sistema AXXESS",
+                "operationId": "a3a063e1318b5b747a478233f4fb0f53",
+                "responses": {
+                    "200": {
+                        "description": "Estadísticas generales",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "productos_activos": {
+                                                    "type": "integer",
+                                                    "example": 7
+                                                },
+                                                "productos_stock_bajo": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "pacientes_activos": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "clientes_activos": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "pedidos_pendientes": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "pedidos_hoy": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "ventas_mes": {
+                                                    "type": "number",
+                                                    "example": 0
+                                                },
+                                                "ventas_hoy": {
+                                                    "type": "number",
+                                                    "example": 0
+                                                },
+                                                "lotes_proximos_vencer": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "alertas_no_leidas": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "alertas_criticas": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "cuentas_vencidas": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "valor_cuentas_por_cobrar": {
+                                                    "type": "number",
+                                                    "example": 0
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/ventas": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Estadísticas de ventas",
+                "description": "Retorna métricas de ventas por período",
+                "operationId": "81be516a334affd69c89d29d9f03818d",
+                "parameters": [
+                    {
+                        "name": "periodo",
+                        "in": "query",
+                        "description": "Período de consulta",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "dia",
+                                "semana",
+                                "mes",
+                                "año"
+                            ],
+                            "example": "mes"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estadísticas de ventas"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/inventario": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Estadísticas de inventario",
+                "description": "Retorna métricas del inventario actual",
+                "operationId": "22a87a32a8ad79ad46eb606e560cc45f",
+                "responses": {
+                    "200": {
+                        "description": "Estadísticas de inventario"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/cartera": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Estadísticas de cartera",
+                "description": "Retorna métricas de cuentas por cobrar",
+                "operationId": "cab5c9f251a8dc5579e00f49f48bb28b",
+                "responses": {
+                    "200": {
+                        "description": "Estadísticas de cartera"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/therapies": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Estadísticas módulo THERAPIES",
+                "description": "Retorna métricas del módulo THERAPIES",
+                "operationId": "ddcf45c7f75ee3d3f19bb7c0216308a2",
+                "responses": {
+                    "200": {
+                        "description": "Estadísticas THERAPIES"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/market": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Estadísticas módulo MARKET",
+                "description": "Retorna métricas del módulo MARKET",
+                "operationId": "d7a6dd6ea9792650f39c085eb5b1fd2b",
+                "responses": {
+                    "200": {
+                        "description": "Estadísticas MARKET"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/alertas": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Resumen de alertas",
+                "description": "Retorna métricas del sistema de alertas",
+                "operationId": "cb21a00af89bb8a5290a942b80d81a43",
+                "responses": {
+                    "200": {
+                        "description": "Resumen de alertas"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/therapies/pacientes": {
+            "get": {
+                "tags": [
+                    "Therapies - Pacientes"
+                ],
+                "summary": "Listar pacientes",
+                "description": "Retorna lista paginada de pacientes del módulo THERAPIES",
+                "operationId": "76afb888ddbf55370c0c275239f07199",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "activo",
+                        "in": "query",
+                        "description": "Filtrar por estado activo",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de pacientes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "codigo_paciente": {
+                                                        "type": "string",
+                                                        "example": "PAC-001"
+                                                    },
+                                                    "nombre_completo": {
+                                                        "type": "string",
+                                                        "example": "Juan Pérez"
+                                                    },
+                                                    "numero_documento": {
+                                                        "type": "string",
+                                                        "example": "1012345678"
+                                                    },
+                                                    "eps_asegurador": {
+                                                        "type": "string",
+                                                        "example": "Nueva EPS"
+                                                    },
+                                                    "telefono": {
+                                                        "type": "string",
+                                                        "example": "+57-300-1234567"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/productos": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Listar productos",
+                "description": "Retorna lista paginada de productos con sus categorías y lotes",
+                "operationId": "70a301af8ea04ce2f2596a58758632cd",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Productos por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 15
+                        }
+                    },
+                    {
+                        "name": "modulo",
+                        "in": "query",
+                        "description": "Filtrar por módulo",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "therapies",
+                                "market"
+                            ],
+                            "example": "market"
+                        }
+                    },
+                    {
+                        "name": "activo",
+                        "in": "query",
+                        "description": "Filtrar por estado activo",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "codigo_producto": {
+                                                        "type": "string",
+                                                        "example": "PROD-001"
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "Eculizumab 300mg"
+                                                    },
+                                                    "modulo": {
+                                                        "type": "string",
+                                                        "example": "therapies"
+                                                    },
+                                                    "precio_compra": {
+                                                        "type": "number",
+                                                        "example": 15000000
+                                                    },
+                                                    "precio_venta": {
+                                                        "type": "number",
+                                                        "example": 18000000
+                                                    },
+                                                    "stock_actual": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "activo": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 50
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Crear producto",
+                "description": "Crea un nuevo producto en el sistema",
+                "operationId": "4ff8851cb6bfe92aa226cdc804917ff0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "codigo_producto",
+                                    "nombre",
+                                    "modulo",
+                                    "precio_compra",
+                                    "precio_venta",
+                                    "unidad_medida"
+                                ],
+                                "properties": {
+                                    "codigo_producto": {
+                                        "type": "string",
+                                        "example": "PROD-999"
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Producto Demo"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Descripción del producto"
+                                    },
+                                    "categoria_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "modulo": {
+                                        "type": "string",
+                                        "enum": [
+                                            "therapies",
+                                            "market"
+                                        ],
+                                        "example": "market"
+                                    },
+                                    "precio_compra": {
+                                        "type": "number",
+                                        "example": 50000
+                                    },
+                                    "precio_venta": {
+                                        "type": "number",
+                                        "example": 75000
+                                    },
+                                    "stock_minimo": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "stock_actual": {
+                                        "type": "integer",
+                                        "example": 50
+                                    },
+                                    "unidad_medida": {
+                                        "type": "string",
+                                        "example": "unidad"
+                                    },
+                                    "activo": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Producto creado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto creado exitosamente"
+                                        },
+                                        "producto": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/productos/{id}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Obtener producto",
+                "description": "Retorna un producto específico por ID",
+                "operationId": "1884f1fc784a80f4976ac9c8d4ce887b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto encontrado"
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Actualizar producto",
+                "description": "Actualiza un producto existente",
+                "operationId": "20275afdbab1759ad2d46f3dcfbeaeeb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Producto Actualizado"
+                                    },
+                                    "precio_venta": {
+                                        "type": "number",
+                                        "example": 80000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Producto actualizado"
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Desactivar producto",
+                "description": "Desactiva un producto (soft delete)",
+                "operationId": "ea733033fbff1681e04f8c4d0e11e0bc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto desactivado"
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/productos/buscar/{termino}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Buscar productos",
+                "description": "Busca productos por nombre, código o molécula",
+                "operationId": "5c7bd1717ea8399fdf94d6ff3e9d74c0",
+                "parameters": [
+                    {
+                        "name": "termino",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "paracetamol"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resultados de búsqueda"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Ingrese el token de autenticación Sanctum",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticación",
+            "description": "Endpoints de autenticación y gestión de sesiones"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Estadísticas y métricas del sistema"
+        },
+        {
+            "name": "Productos",
+            "description": "Gestión de productos (THERAPIES y MARKET)"
+        },
+        {
+            "name": "Therapies - Pacientes",
+            "description": "Módulo THERAPIES - Gestión de pacientes"
+        }
+    ]
+}
